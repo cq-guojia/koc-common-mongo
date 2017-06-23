@@ -6,53 +6,60 @@ const KOCMongo = {
   // region PageParm:分页，参数
   PageParm: function () {
     this.GetPageInfo = true;
-    // this.ColumnPK = "";
-    // this.ColumnMAX = "";
-    // this.ColumnList = "";
-    // this.TableList = "";
-    // this.Condition = "";
-    // this.OrderName = "";
-    // this.Order = "";
+    this.OrderName = "";
     this.Start = 1;
     this.Length = 0;
   },
   // endregion
   // region PageInfo:分页，页数据
-  PageInfo: async (query) => {
+  PageInfo: async (model, criteria) => {
     let RecordCount = 0;
     let retValue = await KOCReturn.Promise(() => {
-      return query.count();
+      return model.count(criteria);
     });
     if (!retValue.hasError) {
       RecordCount = retValue.returnObject;
     }
     if (!RecordCount) {
-      retValue.hasError = false;
-      retValue.returnObject = {
+      return {
         RecordCount: 0,
         MaxCode: ""
       };
-      return retValue;
     }
     retValue = await KOCReturn.Promise(() => {
-      query.limit(1);
-      return query.exec();
+      return model.findOne(criteria);
     });
     if (retValue.hasError) {
-      retValue.hasError = false;
-      retValue.returnObject = {
+      return {
         RecordCount: 0,
         MaxCode: ""
       };
-      return retValue;
     }
-    retValue.hasError = false;
-    retValue.returnObject = {
+    return {
       RecordCount: RecordCount,
-      MaxCode: retValue.returnObject
+      MaxCode: retValue.returnObject._id
     };
     return retValue;
   },
+  // endregion
+  // region PageList:分页数据
+  PageList: async (model, criteria, pageparm) => {
+    return await KOCReturn.Promise(() => {
+      return model.find(criteria).skip(pageparm.GetPageInfo - 1).limit(pageparm.Length);
+    });
+  },
+  // endregion
+  // region Page:分页
+  Page: async (model, criteria, max, pageparm) => {
+    !criteria && (criteria = {});
+    max && (criteria._id = {$gte: max});
+    let retValue = await KOCMongo.PageList(model, criteria, pageparm);
+    if (!pageparm.GetPageInfo || retValue.hasError) {
+      return retValue;
+    }
+    retValue.PutValue("PageInfo", await KOCMongo.PageInfo(model, criteria));
+    return retValue;
+  }
   // endregion
 };
 
