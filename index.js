@@ -45,7 +45,7 @@ const KOCMongo = {
   // region PageList:分页数据
   PageList: async (model, criteria, pageparm) => {
     return await KOCReturn.Promise(() => {
-      return model.find(criteria).skip(pageparm.GetPageInfo - 1).limit(pageparm.Length);
+      return model.find(criteria).skip(pageparm.Start).limit(pageparm.Length);
     });
   },
   // endregion
