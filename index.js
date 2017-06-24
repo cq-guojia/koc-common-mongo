@@ -45,7 +45,19 @@ const KOCMongo = {
   // region PageList:分页数据
   PageList: async (model, criteria, pageparm) => {
     return await KOCReturn.Promise(() => {
-      return model.find(criteria).skip(pageparm.Start).limit(pageparm.Length);
+      let Sort = null;
+      if (pageparm.OrderName) {
+        Sort = {};
+        pageparm.OrderName = pageparm.OrderName.split(",");
+        for (let ThisValue of pageparm.OrderName) {
+          ThisValue = ThisValue.split(" ");
+          ThisValue.length === 2 && (Sort[ThisValue[0]] = ThisValue[1].toLowerCase());
+        }
+      }
+      let Query = model.find(criteria);
+      Sort && (Query.sort(Sort));
+      pageparm.Start && (Query.skip(pageparm.Start));
+      return Query.limit(pageparm.Length);
     });
   },
   // endregion
