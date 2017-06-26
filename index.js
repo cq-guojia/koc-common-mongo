@@ -2,7 +2,40 @@ const Mongoose = require("mongoose");
 
 const KOCReturn = require("koc-common-return");
 
+let clientList = {};
+
 const KOCMongo = {
+  // region Init:初始化
+  Init: (dblist) => {
+    if (!dblist) {
+      return;
+    }
+    if (!(dblist instanceof Array)) {
+      dblist = [dblist];
+    }
+    dblist.forEach((ThisValue) => {
+      try {
+        const Options = {
+          config: {
+            autoIndex: false
+          }
+        };
+        if (ThisValue.user && ThisValue.password) {
+          Options.user = ThisValue.user;
+          Options.pass = ThisValue.password;
+        }
+        clientList[ThisValue.name] = Mongoose.createConnection(ThisValue.uri, ThisValue.database, ThisValue.port, Options);
+      } catch (ex) {
+      }
+    });
+    return clientList;
+  },
+  // endregion
+  // region Model:取得Model
+  Model: (db, name, obj) => {
+    return db.model(name, new Mongoose.Schema(obj), name);
+  },
+  // endregion
   // region PageParm:分页，参数
   PageParm: function () {
     this.GetPageInfo = true;
