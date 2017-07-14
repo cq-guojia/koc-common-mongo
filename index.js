@@ -1,3 +1,5 @@
+"use strict";
+
 const Mongoose = require("mongoose");
 
 const KOCReturn = require("koc-common-return");
