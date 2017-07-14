@@ -28,11 +28,12 @@ const KOCMongo = {
         }
         let uri = '';
         if (ThisValue.user && ThisValue.password) {
-          uri = 'mongodb://' + ThisValue.user + ':' + ThisValue.password + '@' + ThisValue.uri + '/' + ThisValue.database;
+          uri = 'mongodb://' + ThisValue.user + ':' + ThisValue.password + '@' +
+            ThisValue.uri + '/' + ThisValue.database;
         } else {
           uri = 'mongodb://' + ThisValue.uri + '/' + ThisValue.database;
         }
-        clientList[ThisValue.name] = Mongoose.connect(uri);
+        clientList[ThisValue.name] = Mongoose.connect(uri, {useMongoClient: true});
         // clientList[ThisValue.name] = Mongoose.createConnection(ThisValue.uri, ThisValue.database, ThisValue.port, Options);
       } catch (ex) {
       }
