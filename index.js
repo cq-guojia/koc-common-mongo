@@ -21,11 +21,13 @@ const KOCMongo = {
             autoIndex: false,
           },
         };
-        let Auth = "";
+        let Auth = '';
         if (ThisValue.user && ThisValue.password) {
-          Auth = ThisValue.user + ':' + ThisValue.pass + "@";
+          Auth = ThisValue.user + ':' + ThisValue.pass + '@';
         }
-        clientList[ThisValue.name] = Mongoose.createConnection("mongodb://" + Auth + ThisValue.uri + ":" + ThisValue.port + "/" + ThisValue.database, Options);
+        clientList[ThisValue.name] = Mongoose.createConnection('mongodb://' + Auth + ThisValue.uri + ':' + ThisValue.port + '/' + ThisValue.database, Options);
+        // Use native promises
+        Mongoose.Promise = global.Promise;
       } catch (ex) {
       }
     });
