@@ -1,6 +1,6 @@
-const Mongoose = require("mongoose");
+const Mongoose = require('mongoose');
 
-const KOCReturn = require("koc-common-return");
+const KOCReturn = require('koc-common-return');
 
 let clientList = {};
 
@@ -16,9 +16,10 @@ const KOCMongo = {
     dblist.forEach((ThisValue) => {
       try {
         const Options = {
+          useMongoClient: true,
           config: {
-            autoIndex: false
-          }
+            autoIndex: false,
+          },
         };
         if (ThisValue.user && ThisValue.password) {
           Options.user = ThisValue.user;
@@ -37,9 +38,9 @@ const KOCMongo = {
   },
   // endregion
   // region PageParm:分页，参数
-  PageParm: function () {
+  PageParm: function() {
     this.GetPageInfo = true;
-    this.OrderName = "";
+    this.OrderName = '';
     this.Start = 1;
     this.Length = 0;
   },
@@ -56,7 +57,7 @@ const KOCMongo = {
     if (!RecordCount) {
       return {
         RecordCount: 0,
-        MaxCode: ""
+        MaxCode: '',
       };
     }
     retValue = await KOCReturn.Promise(() => {
@@ -65,12 +66,12 @@ const KOCMongo = {
     if (retValue.hasError) {
       return {
         RecordCount: 0,
-        MaxCode: ""
+        MaxCode: '',
       };
     }
     return {
       RecordCount: RecordCount,
-      MaxCode: retValue.returnObject._id
+      MaxCode: retValue.returnObject._id,
     };
     return retValue;
   },
@@ -81,10 +82,11 @@ const KOCMongo = {
       let Sort = null;
       if (pageparm.OrderName) {
         Sort = {};
-        pageparm.OrderName = pageparm.OrderName.split(",");
+        pageparm.OrderName = pageparm.OrderName.split(',');
         for (let ThisValue of pageparm.OrderName) {
-          ThisValue = ThisValue.split(" ");
-          ThisValue.length === 2 && (Sort[ThisValue[0]] = ThisValue[1].toLowerCase());
+          ThisValue = ThisValue.split(' ');
+          ThisValue.length === 2 &&
+          (Sort[ThisValue[0]] = ThisValue[1].toLowerCase());
         }
       }
       let Query = model.find(criteria);
@@ -102,9 +104,9 @@ const KOCMongo = {
     if (!pageparm.GetPageInfo || retValue.hasError) {
       return retValue;
     }
-    retValue.PutValue("PageInfo", await KOCMongo.PageInfo(model, criteria));
+    retValue.PutValue('PageInfo', await KOCMongo.PageInfo(model, criteria));
     return retValue;
-  }
+  },
   // endregion
 };
 
