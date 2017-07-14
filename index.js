@@ -23,11 +23,13 @@ const KOCMongo = {
         };
         let Auth = '';
         if (ThisValue.user && ThisValue.password) {
-          Auth = ThisValue.user + ':' + ThisValue.pass + '@';
+          Auth = ThisValue.user + ':' + ThisValue.password + '@';
         }
+        let ConnectString = 'mongodb://' + Auth + ThisValue.uri + ':' + ThisValue.port + '/' + ThisValue.database;
+        console.log(ConnectString);
         // Use native promises
         Mongoose.Promise = global.Promise;
-        clientList[ThisValue.name] = Mongoose.createConnection('mongodb://' + Auth + ThisValue.uri + ':' + ThisValue.port + '/' + ThisValue.database, Options);
+        clientList[ThisValue.name] = Mongoose.createConnection(ConnectString, Options);
       } catch (ex) {
       }
     });
