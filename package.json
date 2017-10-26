@@ -4,7 +4,7 @@
   "description": "koc-common-mongo",
   "main": "index.js",
   "dependencies": {
-    "koc-common-return": "^1.0.7",
+    "koc-common-return": "^1.0.9",
     "mongoose": "^4.11.2"
   },
   "repository": {
