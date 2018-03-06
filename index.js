@@ -48,7 +48,7 @@ const KOCMongo = {
     this.Length = 0;
   },
   // endregion
-  // region PageInfo:分页，页数据1
+  // region PageInfo:分页，页数据
   PageInfo: async (model, criteria) => {
     let RecordCount = 0;
     let retValue = await KOCReturn.Promise(() => {
