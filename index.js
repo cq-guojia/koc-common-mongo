@@ -16,8 +16,8 @@ const KOCMongo = {
     dblist.forEach((ThisValue) => {
       try {
         const Options = {
-          poolSize: 2,
           useMongoClient: true,
+          autoIndex: false,
           config: {
             autoIndex: false,
           },
