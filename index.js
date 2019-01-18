@@ -48,7 +48,7 @@ const KOCMongo = {
   // endregion
   // region
   CreateIndexes: (model, option) => {
-    if (!model || !model.hasOwnProperty('createIndexes')) return KOCReturn.Value({hasError: true, message: 'model error.'})
+    if (!model) return KOCReturn.Value({hasError: true, message: 'model error.'})
     option = option || {}
     return KOCReturn.Promise(() => {
       return model.createIndexes(option)
