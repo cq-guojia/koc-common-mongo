@@ -27,7 +27,6 @@ const KOCMongo = {
           Auth = ThisValue.user + ':' + ThisValue.password + '@'
         }
         let ConnectString = 'mongodb://' + Auth + ThisValue.uri + ':' + ThisValue.port + '/' + ThisValue.database
-        // Use native promises
         clientList[ThisValue.name] = Mongoose.createConnection(ConnectString, Options)
       } catch (ex) {
       }
