@@ -67,7 +67,7 @@ const KOCMongo = {
   PageInfo: async (model, criteria) => {
     let RecordCount = 0
     let retValue = await KOCReturn.Promise(() => {
-      return model.count(criteria)
+      return model.estimatedDocumentCount(criteria)
     })
     if (!retValue.hasError) {
       RecordCount = retValue.returnObject
