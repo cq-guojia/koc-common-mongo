@@ -16,11 +16,11 @@ const KOCMongo = {
     dblist.forEach((ThisValue) => {
       try {
         const Options = {
-          useMongoClient: true,
-          autoIndex: false,
-          config: {
-            autoIndex: false,
-          },
+          useNewUrlParser: true, // 新连接字符串必须指定端口
+          useCreateIndex: true, // 使用新版本创建索引命令
+          autoIndex: false, // 是否连接时自动创建索引
+          autoReconnect: true, // 是否重连
+          family: 4 // 使用IPV4
         }
         let Auth = ''
         if (ThisValue.user && ThisValue.password) {
