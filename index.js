@@ -16,6 +16,7 @@ const KOCMongo = {
     dblist.forEach((ThisValue) => {
       try {
         const Options = {
+          useFindAndModify: false, // 使用mongoose的findOneAndUpdate
           useNewUrlParser: true, // 新连接字符串必须指定端口
           useCreateIndex: true, // 使用新版本创建索引命令
           autoIndex: false, // 是否连接时自动创建索引
