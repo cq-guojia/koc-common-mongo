@@ -107,7 +107,7 @@ const KOCMongo = {
           (Sort[ThisValue[0]] = ThisValue[1].toLowerCase())
         }
       }
-      let Query = model.find(criteria)
+      let Query = model.find(criteria, null, {lean: true})
       Sort && (Query.sort(Sort))
       pageparm.Start && (Query.skip(pageparm.Start))
       return Query.limit(pageparm.Length)
