@@ -2,34 +2,32 @@ const Mongoose = require('mongoose')
 
 const KOCReturn = require('koc-common-return')
 
-let clientList = {}
+const clientList = {}
 
-const KOCMongo = {
+const KOCMongo = module.exports = {
   // region Init:初始化
   Init: (dblist) => {
-    if (!dblist) {
-      return
-    }
-    if (!(dblist instanceof Array)) {
-      dblist = [dblist]
-    }
-    dblist.forEach((ThisValue) => {
+    if (!dblist) return
+    if (!(dblist instanceof Array)) dblist = [dblist]
+    dblist.forEach((thisValue) => {
       try {
-        const Options = {
-          useFindAndModify: false, // 使用mongoose的findOneAndUpdate
-          useNewUrlParser: true, // 新连接字符串必须指定端口
-          useCreateIndex: true, // 使用新版本创建索引命令
-          autoIndex: false, // 是否连接时自动创建索引
-          autoReconnect: true, // 是否重连
-          family: 4 // 使用IPV4
+        const options = {
+          autoIndex: false,
+          useNewUrlParser: true
         }
-        let Auth = ''
-        if (ThisValue.user && ThisValue.password) {
-          Auth = ThisValue.user + ':' + ThisValue.password + '@'
+        let url = 'mongodb://'
+        if (thisValue.user && thisValue.password) url += `${thisValue.user}:${thisValue.password}@`
+        if (thisValue.replicaSet && Array.isArray(thisValue.uri) && thisValue.uri.length > 0) {
+          url += thisValue.uri.map(t => t + ':' + thisValue.port).join(',')
+          options.replicaSet = thisValue.replicaSet
+          options.authSource = thisValue.authSource
+        } else {
+          url += `${thisValue.uri}:${thisValue.port}`
         }
-        let ConnectString = 'mongodb://' + Auth + ThisValue.uri + ':' + ThisValue.port + '/' + ThisValue.database
-        clientList[ThisValue.name] = Mongoose.createConnection(ConnectString, Options)
+        url = url + `/${thisValue.database}`
+        clientList[thisValue.name] = Mongoose.createConnection(url, options)
       } catch (ex) {
+        console.error('connect to mongo error', ex)
       }
     })
     return clientList
@@ -46,13 +44,11 @@ const KOCMongo = {
     return db.model(name, schema, name)
   },
   // endregion
-  // region
+  // region CreateIndexes:创建索引
   CreateIndexes: (model, option) => {
-    if (!model) return KOCReturn.Value({hasError: true, message: 'model error.'})
-    option = option || {}
-    return KOCReturn.Promise(() => {
-      return model.createIndexes(option)
-    })
+    if (!model) return KOCReturn.Value({ hasError: true, message: 'model error.' })
+    option = Object.assign({ background: true }, option || {})
+    return KOCReturn.Promise(() => model.createIndexes(option))
   },
   // endregion
   // region PageParm:分页，参数
@@ -107,7 +103,7 @@ const KOCMongo = {
           (Sort[ThisValue[0]] = ThisValue[1].toLowerCase())
         }
       }
-      let Query = model.find(criteria, null, {lean: true})
+      let Query = model.find(criteria, null, { lean: true })
       Sort && (Query.sort(Sort))
       pageparm.Start && (Query.skip(pageparm.Start))
       return Query.limit(pageparm.Length)
@@ -117,7 +113,7 @@ const KOCMongo = {
   // region Page:分页
   Page: async (model, criteria, max, pageparm) => {
     !criteria && (criteria = {})
-    max && (criteria._id = {$gte: max})
+    max && (criteria._id = { $gte: max })
     let retValue = await KOCMongo.PageList(model, criteria, pageparm)
     if (!pageparm.GetPageInfo || retValue.hasError) {
       return retValue
@@ -127,5 +123,3 @@ const KOCMongo = {
   },
   // endregion
 }
-
-module.exports = KOCMongo
