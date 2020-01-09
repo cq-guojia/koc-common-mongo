@@ -13,7 +13,7 @@ const KOCMongo = module.exports = {
       try {
         const options = {
           autoIndex: false,         // 禁止自动创建索引
-          useCreateIndex: true,     //
+          useCreateIndex: true,
           useNewUrlParser: true,
           useFindAndModify: false,  // 使用mongo原生的findOneAndUpdate
         }
