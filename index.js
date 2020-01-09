@@ -12,8 +12,10 @@ const KOCMongo = module.exports = {
     dblist.forEach((thisValue) => {
       try {
         const options = {
-          autoIndex: false,
-          useNewUrlParser: true
+          autoIndex: false,         // 禁止自动创建索引
+          useCreateIndex: true,     //
+          useNewUrlParser: true,
+          useFindAndModify: false,  // 使用mongo原生的findOneAndUpdate
         }
         let url = 'mongodb://'
         if (thisValue.user && thisValue.password) url += `${thisValue.user}:${thisValue.password}@`
