@@ -15,6 +15,7 @@ const KOCMongo = module.exports = {
           autoIndex: false,         // 禁止自动创建索引
           useCreateIndex: true,
           useNewUrlParser: true,
+          useUnifiedTopology: true,
           useFindAndModify: false,  // 使用mongo原生的findOneAndUpdate
         }
         let url = 'mongodb://'
