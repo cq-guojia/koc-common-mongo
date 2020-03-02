@@ -19,11 +19,13 @@ const KOCMongo = module.exports = {
           useFindAndModify: false,  // 使用mongo原生的findOneAndUpdate
         }
         let url = 'mongodb://'
-        if (thisValue.user && thisValue.password) url += `${thisValue.user}:${thisValue.password}@`
+        if (thisValue.user && thisValue.password) {
+          url += `${thisValue.user}:${thisValue.password}@`
+          options.authSource = thisValue.authSource || 'admin'
+        }
         if (thisValue.replicaSet && Array.isArray(thisValue.uri) && thisValue.uri.length > 0) {
           url += thisValue.uri.map(t => t + ':' + thisValue.port).join(',')
           options.replicaSet = thisValue.replicaSet
-          options.authSource = thisValue.authSource
         } else {
           url += `${thisValue.uri}:${thisValue.port}`
         }
