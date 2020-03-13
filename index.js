@@ -49,13 +49,84 @@ const KOCMongo = module.exports = {
     return db.model(name, schema, name)
   },
   // endregion
-  // region CreateIndexes:创建索引
-  CreateIndexes: (model, option) => {
+  /**
+   * @description 创建索引
+   * @param model
+   * @param {Object=} options 参数
+   * @param {boolean} options.background 后台创建索引
+   * @return ReturnValue
+   */
+  CreateIndexes: (model, options = {}) => {
     if (!model) return KOCReturn.Value({ hasError: true, message: 'model error.' })
-    option = Object.assign({ background: true }, option || {})
-    return KOCReturn.Promise(() => model.createIndexes(option))
+    if (options.background !== false) options.background = true
+    return KOCReturn.Promise(() => model.createIndexes(options))
   },
-  // endregion
+  /**
+   * @description 写入一条数据
+   * @param model
+   * @param data {Object} 要写入的数据
+   * @return ReturnValue
+   */
+  Insert: (model, data) => {
+    if (!model) return KOCReturn.Value({ hasError: true, message: 'model error.' })
+    return KOCReturn.Promise(() => (new model(data)).save())
+  },
+  /**
+   * @description 读取一条数据
+   * @param model
+   * @param conditions {Object} 查询条件
+   * @param options {Object=} 参数
+   * @param options.limit {Object=} 限制条数
+   * @param options.sort {Object=} 排序
+   * @param options.skip {Object=} 跳过条数
+   * @param options.lean {Object=} 返回数据类型结果
+   * @param options.projection {Object=} 返回字段
+   * @return ReturnValue
+   */
+  FindOne: (model, conditions, options = {}) => {
+    if (!model) return KOCReturn.Value({ hasError: true, message: 'model error.' })
+    if (!conditions) return KOCReturn.Value({ hasError: true, message: 'query error.' })
+    if (options.lean !== false) options.lean = true
+    return KOCReturn.Promise(() => model.findOne(conditions, null, options))
+  },
+  /**
+   * @description 读取多条数据
+   * @param model {Object}
+   * @param conditions {Object} 查询条件
+   * @param options {Object=} 参数
+   * @param options.limit {Object=} 限制条数
+   * @param options.sort {Object=} 排序
+   * @param options.skip {Object=} 跳过条数
+   * @param options.lean {Object=} 返回数据类型结果
+   * @param options.projection {Object=} 返回字段
+   * @return ReturnValue
+   */
+  Find: (model, conditions, options = {}) => {
+    if (!model) return KOCReturn.Value({ hasError: true, message: 'model error.' })
+    if (options.lean !== false) options.lean = true
+    if (!options.limit) options.limit = 5000
+    return KOCReturn.Promise(() => model.find(conditions, null, options))
+  },
+  /**
+   * @description 查找并更新
+   * @param model {Object}
+   * @param conditions {Object} 查询条件
+   * @param update {Object=} 更新内容
+   * @param options {Object=} 参数
+   * @param options.lean {Object=} 返回数据类型结果
+   * @param options.new {boolean=} 是否返回更新后数据
+   * @param options.upsert {boolean=} 当查不到时是否写入数据
+   * @param options.fields {Object} 要返回的字段
+   * @param options.sort {Object} 排序，当匹配的结果为多条时，根据排序更新第一条记录
+   * @param options.setDefaultsOnInsert {boolean} 是否根据schema配置写入默认值
+   * @return ReturnValue
+   */
+  FindOneAndUpdate: (model, conditions, update, options = {}) => {
+    if (!model) return KOCReturn.Value({ hasError: true, message: 'model error.' })
+    if (!conditions) return KOCReturn.Value({ hasError: true, message: 'conditions error.' })
+    if (options.lean !== false) options.lean = true
+    return KOCReturn.Promise(() => model.findOneAndUpdate(conditions, update, options))
+  },
   // region PageParm:分页，参数
   PageParm: function () {
     this.GetPageInfo = true
