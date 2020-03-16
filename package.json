@@ -1,10 +1,11 @@
 {
   "name": "koc-common-mongo",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "description": "koc-common-mongo",
   "main": "index.js",
   "dependencies": {
     "koc-common-return": "^1.0.19",
+    "koc-common-string": "^1.0.43",
     "mongoose": "^5.9.4"
   },
   "repository": {
