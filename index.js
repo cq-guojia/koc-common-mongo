@@ -1,6 +1,6 @@
 const Mongoose = require('mongoose')
 
-const KOCReturn = require('koc-common-return')
+const KOCReturn = require('koc-common-return/index')
 const KOCString = require('koc-common-string')
 
 const clientList = {}
